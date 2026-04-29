@@ -1,0 +1,8 @@
+Django>=5.1
+django-mongodb-backend>=5.1
+scikit-learn>=1.5
+numpy>=1.26
+pandas>=2.2
+reportlab>=4.2
+openai>=1.40.0
+python-dotenv>=1.0.1

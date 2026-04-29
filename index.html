@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}AI Student Study Platform{% endblock %}
+{% block extra_css %}
+<style>
+  .landing-panel {
+    padding: clamp(20px, 5vw, 38px);
+    border-radius: 18px;
+    color: #fff;
+    background:
+      linear-gradient(130deg, rgba(15, 73, 118, 0.88), rgba(18, 124, 179, 0.76) 58%, rgba(33, 163, 124, 0.66)),
+      url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1700&q=80');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .landing-panel::after {
+    content: '';
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    top: -140px;
+    right: -100px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+  .metric-card {
+    border-radius: 14px;
+    border: 1px solid #d5e7f8;
+    background: #fff;
+    padding: 12px;
+    box-shadow: 0 8px 18px rgba(23, 73, 120, 0.08);
+  }
+  .metric-value { font-size: 28px; font-weight: 700; line-height: 1; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="landing-panel mb-4">
+  <span class="hero-chip mb-2">AI-Powered Learning Intelligence</span>
+  <h1 class="mt-2">Rural & Urban Student Study Analytics Platform</h1>
+  <p class="lead mb-0">Analyze study behavior with ML, detect weak areas, and generate personalized recommendations with trackable progress.</p>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="card-soft p-3 h-100"><h5>Survey Intelligence</h5><p class="mb-0">Collect class, subjects, study-hours, weak topics, learning mode, and exam performance.</p></div></div>
+  <div class="col-md-4"><div class="card-soft p-3 h-100"><h5>ML Analytics</h5><p class="mb-0">K-Means clusters study patterns and predicts performance trends using behavioral signals.</p></div></div>
+  <div class="col-md-4"><div class="card-soft p-3 h-100"><h5>Dynamic Recommendations</h5><p class="mb-0">Get topic-wise YouTube/PDF/practice recommendations with clear reasoning.</p></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="metric-card"><div class="small text-muted">Core Modules</div><div class="metric-value">5+</div></div></div>
+  <div class="col-md-4"><div class="metric-card"><div class="small text-muted">Analytics Coverage</div><div class="metric-value">360°</div></div></div>
+  <div class="col-md-4"><div class="metric-card"><div class="small text-muted">Focus Target</div><div class="metric-value">Weak Topics</div></div></div>
+</div>
+
+{% if user.is_authenticated %}
+  <a class="btn btn-primary btn-lg" href="{% url 'dashboard' %}">Go to Dashboard</a>
+{% else %}
+  <div class="d-flex gap-2">
+    <a class="btn btn-primary btn-lg" href="{% url 'login' %}">Login</a>
+    <a class="btn btn-success btn-lg" href="{% url 'signup' %}">Create Account</a>
+  </div>
+{% endif %}
+{% endblock %}

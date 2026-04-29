@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Progress Tracking{% endblock %}
+{% block extra_css %}
+<style>
+  .progress-head {
+    border: 1px solid #cfe3f7;
+    border-radius: 16px;
+    padding: 14px 16px;
+    background: linear-gradient(130deg, #f1f9ff, #ecfff5);
+  }
+  .table > :not(caption) > * > * { vertical-align: middle; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="progress-head mb-3">
+  <h2 class="mb-1">Track Progress Over Time</h2>
+  <div class="small text-muted">Add snapshots consistently to improve prediction quality in analytics modules.</div>
+</div>
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card-soft p-3">
+      <h5>Add Snapshot</h5>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="mb-2">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div class="text-danger small">{{ field.errors|join:', ' }}</div>{% endif %}
+          </div>
+        {% endfor %}
+        <button class="btn btn-success" type="submit">Save Snapshot</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card-soft p-3">
+      <h5>Recent Entries</h5>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead><tr><th>Date</th><th>Subject</th><th>Hours</th><th>Score</th><th>Notes</th></tr></thead>
+          <tbody>
+            {% for item in snapshots %}
+            <tr>
+              <td>{{ item.recorded_on }}</td>
+              <td>{{ item.subject }}</td>
+              <td>{{ item.study_hours }}</td>
+              <td>{{ item.performance_score }}</td>
+              <td>{{ item.notes }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No progress snapshots yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

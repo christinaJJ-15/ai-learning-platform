@@ -1,0 +1,288 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Student Study Analytics{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #142640;
+      --ink-soft: #506682;
+      --paper: #ffffff;
+      --line: #d7e5f4;
+      --accent: #1f7acb;
+      --accent-2: #16a47c;
+      --accent-3: #f5a524;
+      --shadow-soft: 0 22px 44px rgba(8, 28, 48, 0.24);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(11, 30, 50, 0.68), rgba(11, 30, 50, 0.56)),
+        url("https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1920&q=80");
+      background-size: cover, cover;
+      background-position: center, center;
+      background-repeat: no-repeat, no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, h5, .navbar-brand { font-family: 'Sora', sans-serif; letter-spacing: -0.02em; }
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      z-index: -1;
+      border-radius: 50%;
+      filter: blur(8px);
+      opacity: 0.45;
+    }
+    body::before {
+      width: 220px;
+      height: 220px;
+      left: -80px;
+      top: 90px;
+      background: #7ac5ff;
+      animation: blobFloatA 13s ease-in-out infinite;
+    }
+    body::after {
+      width: 280px;
+      height: 280px;
+      right: -100px;
+      bottom: 90px;
+      background: #8eecc4;
+      animation: blobFloatB 15s ease-in-out infinite;
+    }
+    .main-shell {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.9));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: clamp(18px, 3.4vw, 32px);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(8px);
+      animation: fadeUp 0.45s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    .main-shell::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      z-index: -1;
+      border-radius: 24px;
+      background: linear-gradient(115deg, rgba(92, 170, 245, 0.2), rgba(33, 196, 155, 0.16), rgba(251, 194, 84, 0.16));
+    }
+    .card-soft {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(23, 69, 108, 0.1);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .card-soft:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 28px rgba(23, 69, 108, 0.16);
+      border-color: #bad9f4;
+    }
+    .module-card {
+      border: 1px solid #d7e7f8 !important;
+      border-radius: 16px !important;
+      background: linear-gradient(180deg, #fff, #f8fcff) !important;
+      box-shadow: 0 10px 22px rgba(23, 69, 108, 0.11) !important;
+    }
+    .hero-chip {
+      display: inline-block;
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #e7f3ff;
+      color: #1e5f97;
+      font-weight: 600;
+      border: 1px solid #cde5fb;
+    }
+    .navbar {
+      background: transparent;
+      border-bottom: 0;
+      padding-top: 12px;
+    }
+    .navbar .container {
+      background: linear-gradient(105deg, rgba(14, 44, 74, 0.92), rgba(18, 69, 112, 0.9));
+      border: 1px solid rgba(187, 220, 247, 0.25);
+      border-radius: 16px;
+      box-shadow: 0 12px 22px rgba(7, 25, 42, 0.3);
+    }
+    .nav-link, .navbar-brand { color: #f5fbff !important; }
+    .navbar .btn {
+      border-radius: 999px;
+      font-weight: 600;
+      padding: 0.42rem 0.9rem;
+      border-width: 1px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+    .navbar .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(7, 25, 42, 0.28);
+    }
+    .navbar .btn.active-link {
+      background: #ffffff !important;
+      color: #ffffff !important;
+      border-color: #ffffff !important;
+    }
+    .navbar .btn.active-link {
+      color: #10497d !important;
+    }
+    .btn {
+      border-radius: 14px;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 20px rgba(20, 70, 115, 0.16);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #1f7acb, #155f9f);
+      border: none;
+    }
+    .btn-primary:hover { background: linear-gradient(135deg, #155f9f, #114f85); }
+    .btn-success {
+      background: linear-gradient(135deg, #0ea78f, #0b8d7a);
+      border: none;
+    }
+    .btn-success:hover { background: linear-gradient(135deg, #0b8d7a, #087566); }
+    .form-control, .form-select {
+      border-radius: 12px;
+      border-color: #cfe0f2;
+      padding: 0.58rem 0.72rem;
+      background: #fbfeff;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #4ca5f1;
+      box-shadow: 0 0 0 0.2rem rgba(76, 165, 241, 0.16);
+    }
+    .alert {
+      border-radius: 12px;
+      border: 1px solid #d8e5f4;
+      animation: fadeUp 0.35s ease-out;
+    }
+    .table {
+      --bs-table-bg: transparent;
+      border-color: #dbe8f7;
+    }
+    .table thead th {
+      color: #20415f;
+      background: #f4f9ff;
+    }
+    .reveal-ready {
+      opacity: 0;
+      transform: translateY(14px) scale(0.99);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+    .reveal-ready.reveal-in {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes blobFloatA {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-14px) translateX(8px); }
+    }
+    @keyframes blobFloatB {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(12px) translateX(-10px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal-ready { opacity: 1; transform: none; }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<nav class="navbar navbar-expand-lg">
+  <div class="container py-2">
+    <a class="navbar-brand fw-bold" href="{% url 'home' %}">Study Analytics AI</a>
+    <div class="ms-auto d-flex gap-2 align-items-center">
+      {% if user.is_authenticated %}
+        <a class="btn btn-sm btn-light" href="{% url 'dashboard' %}">Dashboard</a>
+        <a class="btn btn-sm btn-outline-light" href="{% url 'survey' %}">Survey</a>
+        <a class="btn btn-sm btn-outline-light" href="{% url 'dashboard' %}#search-module">Search</a>
+        <a class="btn btn-sm btn-outline-light" href="{% url 'feedback' %}">Feedback</a>
+        {% if user.is_staff %}
+          <a class="btn btn-sm btn-warning" href="{% url 'admin_analytics' %}">Admin</a>
+        {% endif %}
+        <a class="btn btn-sm btn-danger" href="{% url 'logout' %}">Logout</a>
+      {% else %}
+        <a class="btn btn-sm btn-light" href="{% url 'login' %}">Login</a>
+        <a class="btn btn-sm btn-success" href="{% url 'signup' %}">Sign Up</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<div class="container py-3">
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+
+<div class="container pb-4">
+  <div class="main-shell">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(() => {
+  const currentPath = window.location.pathname;
+  document.querySelectorAll('.navbar .btn[href]').forEach((btn) => {
+    const href = btn.getAttribute('href');
+    if (!href || href === '#') return;
+    if (href !== '/' && currentPath.startsWith(href)) {
+      btn.classList.add('active-link');
+    } else if (href === '/' && currentPath === '/') {
+      btn.classList.add('active-link');
+    }
+  });
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+
+  const revealTargets = document.querySelectorAll(
+    '.main-shell > *, .card-soft, .module-card, .landing-panel, .feedback-card, .feedback-hero, .table-responsive'
+  );
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.08 }
+  );
+
+  revealTargets.forEach((el, i) => {
+    el.classList.add('reveal-ready');
+    el.style.transitionDelay = `${Math.min(i * 40, 220)}ms`;
+    observer.observe(el);
+  });
+})();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

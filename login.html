@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block extra_css %}
+<style>
+  .login-hero {
+    border-radius: 16px;
+    padding: 18px;
+    background: linear-gradient(140deg, #103f6e, #1480c4 60%, #2aa47d);
+    color: #fff;
+    height: 100%;
+  }
+  .login-point {
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.1);
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="row g-3">
+      <div class="col-md-5">
+        <div class="login-hero">
+          <div class="small opacity-75 mb-2">Welcome back</div>
+          <h4 class="mb-3">Track your learning momentum</h4>
+          <div class="login-point">Personalized recommendations</div>
+          <div class="login-point">Progress trend charts</div>
+          <div class="login-point">Survey-based study plan</div>
+        </div>
+      </div>
+      <div class="col-md-7">
+    <div class="card-soft p-4">
+      <h2 class="mb-3">Student Login</h2>
+      {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input class="form-control" name="email" type="email" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input class="form-control" name="password" type="password" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Login</button>
+      </form>
+      <p class="mt-3 mb-0">No account yet? <a href="{% url 'signup' %}">Sign up</a></p>
+    </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

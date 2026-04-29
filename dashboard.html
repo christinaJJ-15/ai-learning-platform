@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% block title %}Home Dashboard{% endblock %}
+{% block extra_css %}
+<style>
+  .dash-hero {
+    position: relative;
+    border: 1px solid #cde2f7;
+    border-radius: 20px;
+    padding: 20px;
+    background:
+      linear-gradient(125deg, rgba(14, 47, 80, 0.86), rgba(22, 93, 146, 0.74) 56%, rgba(23, 146, 112, 0.66)),
+      url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1800&q=80');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    overflow: hidden;
+    box-shadow: 0 18px 34px rgba(16, 77, 127, 0.22);
+  }
+  .dash-hero::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    right: -90px;
+    top: -120px;
+    background: rgba(255, 255, 255, 0.16);
+  }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .metric-card {
+    border: 1px solid #cde2f8;
+    border-radius: 14px;
+    padding: 12px;
+    background: #fff;
+    box-shadow: 0 10px 18px rgba(22, 76, 123, 0.09);
+  }
+  .metric-value { font-family: 'Sora', sans-serif; font-size: 24px; line-height: 1.1; }
+  .quick-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+  .quick-card {
+    border: 1px solid #d4e6f9;
+    border-radius: 14px;
+    padding: 12px;
+    background: linear-gradient(180deg, #ffffff, #f6fbff);
+    min-height: 130px;
+    transition: transform 0.24s ease, box-shadow 0.24s ease;
+  }
+  .quick-card:hover { transform: translateY(-3px); box-shadow: 0 14px 20px rgba(23, 76, 124, 0.14); }
+  .module-card { border: 1px solid #d7e7f8; border-radius: 16px; padding: 16px; background: #fff; box-shadow: 0 12px 24px rgba(25, 80, 127, 0.09); }
+  .lag-item { border-left: 4px solid #ff9a3d; padding: 10px 12px; background: #fffaf4; border-radius: 10px; margin-bottom: 10px; }
+  .schedule-card {
+    border: 1px solid #d4e6f8;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff, #f8fcff);
+    padding: 14px;
+    box-shadow: 0 8px 16px rgba(20, 75, 124, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .schedule-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(180deg, #1594d6, #19ba87);
+  }
+  .schedule-badge { font-size: 12px; border-radius: 999px; padding: 4px 10px; }
+  .glass-panel {
+    border: 1px solid #cfe2f6;
+    border-radius: 16px;
+    padding: 16px;
+    background: linear-gradient(150deg, rgba(255,255,255,0.95), rgba(244,251,255,0.9));
+    backdrop-filter: blur(5px);
+  }
+  .search-shell {
+    border: 1px solid #cde1f5;
+    border-radius: 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #f3f9ff, #f2fff8);
+  }
+  .search-item {
+    border: 1px solid #d5e8fa;
+    border-radius: 10px;
+    padding: 9px 10px;
+    margin-bottom: 8px;
+    background: #fff;
+  }
+  @media (max-width: 1200px) { .quick-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 991px) {
+    .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 576px) {
+    .metric-grid, .quick-grid { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="dash-hero mb-3">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+    <div>
+      <div class="small text-white-50">Personalized Learning Workspace</div>
+      <h2 class="mb-1">Student Home Dashboard</h2>
+      <div class="small text-white-50">Focused by weak-topic analysis, performance trend, and daily execution plan.</div>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-light btn-sm" href="{% url 'survey' %}">Update Survey</a>
+      <a class="btn btn-outline-light btn-sm" href="#search-module">Search Materials</a>
+    </div>
+  </div>
+</div>
+
+<div class="metric-grid mb-3">
+  <div class="metric-card">
+    <div class="small text-muted">Predicted Score</div>
+    <div class="metric-value">{{ analysis.predicted_score }}%</div>
+  </div>
+  <div class="metric-card">
+    <div class="small text-muted">Predicted Level</div>
+    <div class="metric-value">{{ analysis.predicted_level|title }}</div>
+  </div>
+  <div class="metric-card">
+    <div class="small text-muted">Lagging Subjects</div>
+    <div class="metric-value">{{ detailed_recommendation.lagging_areas|length }}</div>
+  </div>
+  <div class="metric-card">
+    <div class="small text-muted">Study Time / Day</div>
+    <div class="metric-value">{{ detailed_recommendation.overview.study_time_total_hours_per_day }}h</div>
+  </div>
+</div>
+
+<div class="quick-grid mb-3">
+  <div class="quick-card"><h6>1. Student Survey</h6><p class="mb-2 small">Update grade, subjects, weak topics.</p><a href="{% url 'survey' %}">Open Survey</a></div>
+  <div class="quick-card"><h6>2. Recommendations</h6><p class="mb-2 small">See weak areas and practical focus actions.</p><a href="#schedule-module">View</a></div>
+  <div class="quick-card"><h6>3. Search</h6><p class="mb-2 small">Discover useful materials by topic.</p><a href="#search-module">Open</a></div>
+  <div class="quick-card"><h6>4. Feedback</h6><p class="mb-2 small">Tell us what should improve next.</p><a href="{% url 'feedback' %}">Open</a></div>
+</div>
+
+<div id="schedule-module" class="module-card mb-3">
+  <h5 class="mb-1">Hi {{ detailed_recommendation.overview.student }},</h5>
+
+  <div class="row g-2">
+    <div class="col-lg-6">
+      <div class="schedule-card h-100">
+        <strong>Quick summary</strong>
+        <div class="small mt-2"><strong>Name:</strong> {{ detailed_recommendation.overview.student }}</div>
+        <div class="small"><strong>Grade:</strong> {{ detailed_recommendation.overview.grade }}</div>
+        <div class="small"><strong>Learning method:</strong> {{ detailed_recommendation.overview.learning_method|title }}</div>
+        <div class="small"><strong>Score now:</strong> {{ detailed_recommendation.overview.score_now }}%</div>
+        <div class="small"><strong>Predicted:</strong> {{ detailed_recommendation.overview.score_predicted }}%</div>
+        <div class="small"><strong>Consistency:</strong> {{ detailed_recommendation.overview.consistency }}</div>
+        <div class="small"><strong>Total study time/day:</strong> {{ detailed_recommendation.overview.study_time_total_hours_per_day }}h</div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="schedule-card h-100">
+        <strong>You are lagging in these subjects</strong>
+        <div class="small mt-2">
+          {% for area in detailed_recommendation.lagging_areas %}
+            <div class="mb-1">
+              <strong>{{ area.subject }}</strong>
+              {% if area.primary_topic %} — {{ area.primary_topic }}{% endif %}
+            </div>
+          {% empty %}
+            <div class="text-muted">No lagging subjects detected from the survey.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="mt-4">Recommendations</h5>
+  <p class="small text-muted mb-2">Topic-based resources from your survey.</p>
+  {% for area in detailed_recommendation.lagging_areas %}
+    <div class="lag-item">
+      <strong>
+        You are lagging in {{ area.primary_topic|default:"(topic not provided)" }} in {{ area.subject }}
+      </strong>
+      {% if area.resources %}
+        <div class="small mt-2"><strong>Best platforms for your topic</strong></div>
+        <ul class="small mb-1">
+          {% for r in area.resources %}
+            <li>
+              <a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.label }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+<div class="module-card mb-3 p-3">
+  <h5 class="mb-1">Performance chart</h5>
+  <p class="small text-muted mb-2">Your current score vs prediction vs average.</p>
+  <div style="height: 260px;">
+    <canvas id="performanceChart"></canvas>
+  </div>
+</div>
+
+<div id="search-module" class="search-shell">
+  <h5>Search Study Materials</h5>
+  <div class="input-group mb-2">
+    <input id="searchInput" class="form-control" placeholder="Search topic/chapter/subject">
+    <button id="searchBtn" class="btn btn-primary" type="button">Search</button>
+  </div>
+  <div id="searchResults" class="small text-muted">Search results appear here.</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return '';
+}
+const csrfToken = getCookie('csrftoken');
+
+(() => {
+  const el = document.getElementById('performanceChart');
+  if (!el || typeof Chart === 'undefined') return;
+
+  const scoreNow = Number({{ detailed_recommendation.overview.score_now|default:0 }});
+  const predicted = Number({{ analysis.predicted_score|default:0 }});
+  const avg = Number({{ analysis.global_avg_score|default:0 }});
+
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: ['Score now', 'Predicted', 'Global avg'],
+      datasets: [{
+        label: 'Score (%)',
+        data: [scoreNow, predicted, avg],
+        backgroundColor: ['#1f7acb', '#16a47c', '#f5a524']
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, max: 100, title: { display: true, text: 'Percent' } }
+      }
+    }
+  });
+})();
+
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const searchResults = document.getElementById('searchResults');
+
+searchBtn.addEventListener('click', async () => {
+  const q = searchInput.value.trim();
+  if (!q) return;
+  searchResults.innerHTML = '<div class="small text-muted">Searching...</div>';
+  const resp = await fetch(`{% url "api_search_materials" %}?q=${encodeURIComponent(q)}`);
+  const data = await resp.json();
+  if (!data.results.length) {
+    searchResults.textContent = 'No results found.';
+    return;
+  }
+  searchResults.innerHTML = data.results.map(item => `
+    <div class="search-item">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <span class="badge text-bg-light">${item.type}</span>
+      </div>
+      <strong>${item.title}</strong><br>
+      <a href="${item.url}" target="_blank" rel="noopener">Open resource</a>
+    </div>
+  `).join('');
+});
+</script>
+{% endblock %}
